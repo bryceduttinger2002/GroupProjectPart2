@@ -1,4 +1,3 @@
-from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 
@@ -23,11 +22,6 @@ class CustomerUpdate(BaseModel):
 
 class Customer(CustomerBase):
     id: int
-    created_at: datetime
-    updated_at: datetime
 
     class ConfigDict:
         from_attributes = True
-
-
-

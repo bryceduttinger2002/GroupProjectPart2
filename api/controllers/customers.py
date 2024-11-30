@@ -31,27 +31,21 @@ def read_all(db: Session):
     return result
 
 
-def read_one(db: Session, customer_id):
     try:
         customer = db.query(model.Customer).filter(model.Customer.id == customer_id).first()
         if not customer:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found!")
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return customer
 
 
-def update(db: Session, customer_id, request):
     try:
         customer = db.query(model.Customer).filter(model.Customer.id == customer_id)
         if not customer.first():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found!")
-        update_data = request.dict(exclude_unset=True)
-        customer.update(update_data, synchronize_session=False)
         db.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return customer.first()
 
