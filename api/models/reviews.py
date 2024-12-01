@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DATETIME
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..dependencies.database import Base
+
 
 class Review(Base):
     __tablename__ = "reviews"
@@ -11,7 +12,8 @@ class Review(Base):
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=True)
     review_text = Column(Text, nullable=False)
     score = Column(Integer, nullable=False)  # e.g., 1-5 rating
-    created_at = Column(DATETIME, nullable=False, server_default=str(datetime.now()))
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
+    # Relationships
     customer = relationship("Customer", back_populates="reviews")
     order = relationship("Order", back_populates="reviews")

@@ -1,38 +1,30 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from ..controllers import customers as controller
-from ..schemas import customers as schema
 from ..dependencies.database import get_db
+from ..schemas.customers import CustomerCreate, CustomerUpdate, CustomerBase
+from ..controllers import customers as controller
 
 router = APIRouter(
-    tags=['Customers'],
-    prefix="/customers"
+    prefix="/customers",
+    tags=["Customers"]
 )
 
+@router.post("/", response_model=CustomerBase, status_code=status.HTTP_201_CREATED)
+def create_customer(request: CustomerCreate, db: Session = Depends(get_db)):
+    return controller.create(db, request)
 
-@router.post("/", response_model=schema.Customer)
-def create(request: schema.CustomerCreate, db: Session = Depends(get_db)):
-    # Calls the controller to handle creating a new customer
-    return controller.create(db=db, request=request)
-
-
-@router.get("/", response_model=list[schema.Customer])
-def read_all(db: Session = Depends(get_db)):
-    # Calls the controller to fetch all customers
+@router.get("/", response_model=list[CustomerBase])
+def read_all_customers(db: Session = Depends(get_db)):
     return controller.read_all(db)
 
+@router.get("/{customer_id}", response_model=CustomerBase)
+def read_one_customer(customer_id: int, db: Session = Depends(get_db)):
+    return controller.read_one(db, customer_id)
 
-@router.get("/{customer_id}", response_model=schema.Customer)
-def get_customer(customer_id: int, db: Session = Depends(get_db)):
-    return controller.read_one(db, customer_id=customer_id)
+@router.put("/{customer_id}", response_model=CustomerBase)
+def update_customer(customer_id: int, request: CustomerUpdate, db: Session = Depends(get_db)):
+    return controller.update(db, customer_id, request)
 
-
-@router.put("/{customer_id}", response_model=schema.Customer)
-def update_customer(customer_id: int, request: schema.CustomerUpdate, db: Session = Depends(get_db)):
-    return controller.update(db=db, customer_id=customer_id, request=request)
-
-
-@router.delete("/{customer_id}")
-def delete(customer_id: int, db: Session = Depends(get_db)):
-    # Calls the controller to delete a customer by ID
-    return controller.delete(db=db, customer_id=customer_id)
+@router.delete("/{customer_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_customer(customer_id: int, db: Session = Depends(get_db)):
+    return controller.delete(db, customer_id)

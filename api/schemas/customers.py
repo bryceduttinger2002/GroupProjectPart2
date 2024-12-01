@@ -3,14 +3,18 @@ from typing import Optional
 
 
 class CustomerBase(BaseModel):
+    id: Optional[int] = None
     name: str
     email: str
     phone: Optional[str] = None
     address: Optional[str] = None
 
 
-class CustomerCreate(CustomerBase):
-    pass
+class CustomerCreate(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+    address: Optional[str] = None
 
 
 class CustomerUpdate(BaseModel):
@@ -18,10 +22,6 @@ class CustomerUpdate(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
     address: Optional[str] = None
-
-
-class Customer(CustomerBase):
-    id: int
 
     class ConfigDict:
         from_attributes = True

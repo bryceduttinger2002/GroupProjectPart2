@@ -1,6 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DECIMAL, DATETIME
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from datetime import datetime
 from ..dependencies.database import Base
 
 
@@ -8,8 +7,10 @@ class Sandwich(Base):
     __tablename__ = "sandwiches"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    sandwich_name = Column(String(100), unique=True, nullable=True)
-    price = Column(DECIMAL(4, 2), nullable=False, server_default='0.0')
+    name = Column(String(100), nullable=False)
+    price = Column(Integer, nullable=False)
+    order_detail_id = Column(Integer, ForeignKey("order_details.id"), nullable=True)
 
-    recipes = relationship("Recipe", back_populates="sandwich")
-    order_details = relationship("OrderDetail", back_populates="sandwich")
+    # Relationships
+    order_detail = relationship("OrderDetail", back_populates="sandwiches")
+    recipes = relationship("Recipe", back_populates="sandwich", cascade="all, delete-orphan")

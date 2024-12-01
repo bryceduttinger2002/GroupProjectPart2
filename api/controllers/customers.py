@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response
 from ..models import customers as model
+from ..schemas.customers import CustomerUpdate
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -16,7 +17,7 @@ def create(db: Session, request):
         db.commit()
         db.refresh(new_customer)
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
+        error = str(e.__dict__.get('orig', 'Unknown error'))
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
 
     return new_customer
@@ -26,29 +27,55 @@ def read_all(db: Session):
     try:
         result = db.query(model.Customer).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
+        error = str(e.__dict__.get('orig', 'Unknown error'))
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return result
 
-def get_customer(db: Session, customer_id: int):
+
+def read_one(db: Session, customer_id: int):
     try:
         customer = db.query(model.Customer).filter(model.Customer.id == customer_id).first()
-        if not customer.first():
+        if not customer:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found!")
-        customer.delete(synchronize_session=False)
-        db.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
+        error = str(e.__dict__.get('orig', 'Unknown error'))
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-def delete(db: Session, customer_id):
+    return customer
+
+
+def update(db: Session, customer_id: int, request: CustomerUpdate):
     try:
-        customer = db.query(model.Customer).filter(model.Customer.id == customer_id)
-        if not customer.first():
+        customer = db.query(model.Customer).filter(model.Customer.id == customer_id).first()
+        if not customer:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found!")
-        customer.delete(synchronize_session=False)
+
+        if request.name is not None:
+            customer.name = request.name
+        if request.email is not None:
+            customer.email = request.email
+        if request.phone is not None:
+            customer.phone = request.phone
+        if request.address is not None:
+            customer.address = request.address
+
+        db.commit()
+        db.refresh(customer)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__.get('orig', 'Unknown error'))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
+
+    return customer
+
+
+def delete(db: Session, customer_id: int):
+    try:
+        customer = db.query(model.Customer).filter(model.Customer.id == customer_id).first()
+        if not customer:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found!")
+        db.delete(customer)
         db.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
+        error = str(e.__dict__.get('orig', 'Unknown error'))
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
+
     return Response(status_code=status.HTTP_204_NO_CONTENT)

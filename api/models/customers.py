@@ -7,10 +7,10 @@ class Customer(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(100), nullable=False)
-    email = Column(String(150), nullable=False)
+    email = Column(String(100), nullable=False, unique=True)
+    address = Column(String(255), nullable=True)
     phone = Column(String(15), nullable=True)
-    address = Column(String(255), nullable=False)
 
     # Relationships
-    order_details = relationship("OrderDetail", back_populates="customer")
-    reviews = relationship("Review", back_populates="customer")  # Add this line
+    orders = relationship("Order", back_populates="customer", cascade="all, delete-orphan")
+    reviews = relationship("Review", back_populates="customer", cascade="all, delete-orphan")
