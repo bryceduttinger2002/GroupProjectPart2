@@ -39,3 +39,9 @@ app.include_router(sandwiches_router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the API!"}
+
+# Add a route for favicon.ico to suppress 404 logs
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return {"message": "No favicon available"}
+
