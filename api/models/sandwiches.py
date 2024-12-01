@@ -7,7 +7,7 @@ class Sandwich(Base):
     __tablename__ = "sandwiches"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String(100), nullable=False)
+    sandwich_name = Column(String(100), nullable=False)
     price = Column(Integer, nullable=False)
     order_detail_id = Column(Integer, ForeignKey("order_details.id"), nullable=True)
 

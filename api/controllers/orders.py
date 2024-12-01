@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 def create(db: Session, request):
     new_item = model.Order(
-        customer_name=request.customer_name,  # Ensure these fields exist in the request and model
+        customer_id=request.customer_id,  # Ensure these fields exist in the request and model
         description=request.description
     )
 
