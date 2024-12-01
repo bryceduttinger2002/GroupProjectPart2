@@ -14,5 +14,6 @@ class Order(Base):
 
     # Relationships
     order_details = relationship("OrderDetail", back_populates="order")
+    products = relationship("Product", secondary="order_product", back_populates="order")
 
     __table_args__ = {"extend_existing": True}

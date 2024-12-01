@@ -13,7 +13,7 @@ from .routers import (
     sandwiches_router,
 )
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 # Add CORS middleware
 app.add_middleware(

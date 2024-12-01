@@ -30,26 +30,17 @@ def read_all(db: Session):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return result
 
-
+def get_customer(db: Session, customer_id: int):
     try:
         customer = db.query(model.Customer).filter(model.Customer.id == customer_id).first()
-        if not customer:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found!")
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
-    return customer
-
-
-    try:
-        customer = db.query(model.Customer).filter(model.Customer.id == customer_id)
         if not customer.first():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found!")
+        customer.delete(synchronize_session=False)
         db.commit()
     except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
-    return customer.first()
-
-
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 def delete(db: Session, customer_id):
     try:
         customer = db.query(model.Customer).filter(model.Customer.id == customer_id)
