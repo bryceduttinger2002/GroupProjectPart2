@@ -7,11 +7,12 @@ class Payment(Base):
     __tablename__ = "payments"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)  # Link to Order
     card_number = Column(String(16), nullable=False)
     transaction_status = Column(String(50), nullable=False)
     payment_type = Column(String(50), nullable=False)
     amount = Column(DECIMAL(10, 2), nullable=False)
     created_at = Column(DATETIME, nullable=False, server_default=str(datetime.now()))
 
+    # Relationship
     order = relationship("Order", back_populates="payments")

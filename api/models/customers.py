@@ -1,8 +1,6 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DECIMAL, DATETIME
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from datetime import datetime
 from ..dependencies.database import Base
-
 
 class Customer(Base):
     __tablename__ = "customers"
@@ -13,4 +11,6 @@ class Customer(Base):
     phone = Column(String(15), nullable=True)
     address = Column(String(255), nullable=False)
 
+    # Relationships
     order_details = relationship("OrderDetail", back_populates="customer")
+    reviews = relationship("Review", back_populates="customer")  # Add this line
