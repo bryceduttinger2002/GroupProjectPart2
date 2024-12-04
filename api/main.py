@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import (
+from contextlib import asynccontextmanager
+from api.dependencies.database import Base, engine
+from api.routers import (
     index_router,
     customers_router,
     orders_router,
@@ -13,18 +15,23 @@ from .routers import (
     sandwiches_router,
 )
 
-app = FastAPI(debug=True)
+# Lifespan context manager to handle database initialization
+@asynccontextmanager
+async def lifespan(app: FastAPI):
 
-# Add CORS middleware
+    Base.metadata.create_all(bind=engine)
+    yield
+
+app = FastAPI(debug=True, lifespan=lifespan)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
 app.include_router(index_router)
 app.include_router(customers_router)
 app.include_router(orders_router)
@@ -36,6 +43,7 @@ app.include_router(recipes_router)
 app.include_router(resources_router)
 app.include_router(sandwiches_router)
 
+# Root route
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the API!"}
@@ -44,4 +52,3 @@ def read_root():
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
     return {"message": "No favicon available"}
-
