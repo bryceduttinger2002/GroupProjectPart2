@@ -5,6 +5,7 @@ from .order_details import OrderDetail
 
 class OrderBase(BaseModel):
     customer_id: int
+    sandwich_id: int
     #: Optional[str] = None
     order_date: Optional[datetime] = None
     tracking_number: Optional[str] = None

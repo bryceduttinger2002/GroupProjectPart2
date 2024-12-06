@@ -14,3 +14,4 @@ class Sandwich(Base):
     # Relationships
     order_detail = relationship("OrderDetail", back_populates="sandwiches")
     recipes = relationship("Recipe", back_populates="sandwich", cascade="all, delete-orphan")
+    orders = relationship("Order", back_populates="sandwich")
