@@ -13,7 +13,6 @@ class Order(Base):
     order_date = Column(DateTime, default=datetime.utcnow, nullable=False)
     tracking_number = Column(String(50), nullable=True, unique=True)
     order_status = Column(String(50), nullable=False, default="Pending")
-    total_price = Column(Float, nullable=False)
 
 
 

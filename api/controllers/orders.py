@@ -12,7 +12,6 @@ def create(db: Session, request):
         order_date=request.order_date or datetime.utcnow(),
         tracking_number=request.tracking_number,
         order_status=request.order_status or "Pending",
-        total_price=  request.total_price,
     )
 
     try:

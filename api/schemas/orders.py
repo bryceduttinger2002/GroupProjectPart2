@@ -9,7 +9,6 @@ class OrderBase(BaseModel):
     order_date: Optional[datetime] = None
     tracking_number: Optional[str] = None
     order_status: Optional[str] = None
-    total_price: float
 
 class OrderCreate(OrderBase):
     pass
@@ -20,7 +19,6 @@ class OrderUpdate(BaseModel):
     order_date: Optional[datetime] = None
     tracking_number: Optional[str] = None
     order_status: Optional[str] = None
-    total_price: float
 
 class Order(OrderBase):
     id: int
