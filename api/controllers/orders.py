@@ -8,7 +8,8 @@ from datetime import datetime
 def create(db: Session, request):
     new_item = model.Order(
         customer_id=request.customer_id,
-        sandwich_id=request.sandwich_id,# Ensure these fields exist in the request and model
+        sandwich_id=request.sandwich_id,
+        quantity=request.quantity,# Ensure these fields exist in the request and model
         #description=request.description
         order_date=request.order_date or datetime.utcnow(),
         tracking_number=request.tracking_number,

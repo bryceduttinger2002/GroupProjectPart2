@@ -10,6 +10,7 @@ class Order(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
     sandwich_id = Column(Integer, ForeignKey("sandwiches.id"), nullable=False)
+    quantity = Column(Integer, nullable=False)
     #description = Column(String(255), nullable=False)
     order_date = Column(DateTime, default=datetime.utcnow, nullable=False)
     tracking_number = Column(String(50), nullable=True, unique=True)
