@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float
 from sqlalchemy.orm import relationship
 from ..dependencies.database import Base
+from datetime import datetime
 
 
 class Order(Base):
@@ -8,7 +9,13 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
-    description = Column(String(255), nullable=False)
+    #description = Column(String(255), nullable=False)
+    order_date = Column(DateTime, default=datetime.utcnow, nullable=False)
+    tracking_number = Column(String(50), nullable=True, unique=True)
+    order_status = Column(String(50), nullable=False, default="Pending")
+    total_price = Column(Float, nullable=False)
+
+
 
     # Relationships
     customer = relationship("Customer", back_populates="orders")

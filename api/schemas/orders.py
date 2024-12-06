@@ -5,14 +5,22 @@ from .order_details import OrderDetail
 
 class OrderBase(BaseModel):
     customer_id: int
-    description: Optional[str] = None
+    #: Optional[str] = None
+    order_date: Optional[datetime] = None
+    tracking_number: Optional[str] = None
+    order_status: Optional[str] = None
+    total_price: float
 
 class OrderCreate(OrderBase):
     pass
 
 class OrderUpdate(BaseModel):
     customer_id: Optional[int] = None
-    description: Optional[str] = None
+    #description: Optional[str] = None
+    order_date: Optional[datetime] = None
+    tracking_number: Optional[str] = None
+    order_status: Optional[str] = None
+    total_price: float
 
 class Order(OrderBase):
     id: int

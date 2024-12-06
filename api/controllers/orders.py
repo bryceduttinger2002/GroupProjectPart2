@@ -2,12 +2,17 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response, Depends
 from ..models import orders as model  # Fixed the import statement
 from sqlalchemy.exc import SQLAlchemyError
+from datetime import datetime
 
 
 def create(db: Session, request):
     new_item = model.Order(
         customer_id=request.customer_id,  # Ensure these fields exist in the request and model
-        description=request.description
+        #description=request.description
+        order_date=request.order_date or datetime.utcnow(),
+        tracking_number=request.tracking_number,
+        order_status=request.order_status or "Pending",
+        total_price=  request.total_price,
     )
 
     try:
